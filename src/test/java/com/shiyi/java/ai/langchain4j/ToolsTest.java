@@ -1,6 +1,5 @@
 package com.shiyi.java.ai.langchain4j;
 
-import com.shiyi.java.ai.langchain4j.assistant.SeparateChatAssistant;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

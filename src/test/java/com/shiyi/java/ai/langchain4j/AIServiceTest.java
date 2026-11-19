@@ -1,8 +1,5 @@
 package com.shiyi.java.ai.langchain4j;
 
-import com.shiyi.java.ai.langchain4j.assistant.Assistant;
-import com.shiyi.java.ai.langchain4j.assistant.MemoryChatAssistant;
-import com.shiyi.java.ai.langchain4j.assistant.SeparateChatAssistant;
 import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.data.message.UserMessage;
 import dev.langchain4j.memory.chat.MessageWindowChatMemory;

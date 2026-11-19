@@ -53,11 +53,6 @@ public class AppointmentTools {
             @P(value = "时间，可选值：上午、下午") String time,
             @P(value = "医生名称", required = false) String doctorName
     ) {
-        System.out.println("查询是否有号源");
-        System.out.println("科室名称：" + name);
-        System.out.println("日期：" + date);
-        System.out.println("时间：" + time);
-        System.out.println("医生名称：" + doctorName);
 //TODO 维护医生的排班信息：
 //如果没有指定医生名字，则根据其他条件查询是否有可以预约的医生（有返回true，否则返回false）；
 //如果指定了医生名字，则判断医生是否有排班（没有排版返回false）

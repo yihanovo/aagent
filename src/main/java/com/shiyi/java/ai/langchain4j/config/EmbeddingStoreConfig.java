@@ -18,6 +18,7 @@ public class EmbeddingStoreConfig {
     @Value("${secrets.pinecone-api-key}")
     private String pineconeApiKey;
 
+    //创建一个 EmbeddingStore Bean，用于存储和检索文本嵌入向量
     @Bean
     public EmbeddingStore<TextSegment> embeddingStore() {
 //创建向量存储

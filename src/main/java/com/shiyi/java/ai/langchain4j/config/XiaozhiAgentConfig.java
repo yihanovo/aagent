@@ -30,6 +30,7 @@ public class XiaozhiAgentConfig {
     @Autowired
     private MongoChatMemoryStore mongoChatMemoryStore;
 
+    //定义一个 ChatMemoryProvider Bean，用于提供聊天记忆存储，支持多轮对话
     @Bean
     ChatMemoryProvider chatMemoryProviderXiaozhi() {
         return memoryId -> MessageWindowChatMemory.builder()
@@ -40,7 +41,7 @@ public class XiaozhiAgentConfig {
     }
 
 
-    //定义一个 ContentRetriever Bean，用于从知识库中检索相关内容
+    //定义一个 ContentRetriever Bean，用于从知识库中检索相关内容，包含知识库文档的加载、嵌入向量存储和内容检索逻辑，默认将信息向量化后存储在内存中，适合小型知识库
     @Bean
     ContentRetriever contentRetrieverXiaozhi() {
 //使用FileSystemDocumentLoader读取指定目录下的知识库文档
@@ -51,7 +52,7 @@ public class XiaozhiAgentConfig {
         List<Document> documents = Arrays.asList(document1, document2, document3);
 //使用内存向量存储
         InMemoryEmbeddingStore<TextSegment> embeddingStore = new InMemoryEmbeddingStore<>();
-//使用默认的文档分割器
+//使用默认的文档分割器,将文档分割成文本片段，并使用默认的嵌入模型将文本片段转换为向量
         EmbeddingStoreIngestor.ingest(documents, embeddingStore);
 //从嵌入存储（EmbeddingStore）里检索和查询内容相关的信息
         return EmbeddingStoreContentRetriever.from(embeddingStore);
@@ -61,6 +62,7 @@ public class XiaozhiAgentConfig {
     private EmbeddingStore embeddingStore;
     @Autowired
     private EmbeddingModel embeddingModel;
+    //定义一个 ContentRetriever Bean，用于从知识库中检索相关内容，包含知识库文档的加载、嵌入向量存储和内容检索逻辑，默认将信息向量化后存储在 Pinecone 向量数据库中，适合大型知识库
     @Bean
     ContentRetriever contentRetrieverXiaozhiPincone() {
 // 创建一个 EmbeddingStoreContentRetriever 对象，用于从嵌入存储中检索内容
