@@ -1,0 +1,54 @@
+server:
+  port: 8080
+
+spring:
+  # 引入本地密钥配置（该文件不提交到远程仓库）
+  config:
+    import: classpath:application-secret.yml
+  datasource:
+    url: jdbc:mysql://localhost:3306/guiguxiaozhi?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&useSSL=false
+    username: root
+    password: ${secrets.mysql-password}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  data:
+    mongodb:
+      # 本项目专用容器 ai-langchain4j-mongo：宿主机 27018 -> 容器 27017
+      # 对话记忆独立放在 ai_chat_memory 库，避免和本机 27017 的 MongoDB 服务、mall 项目数据混在一起
+      uri: mongodb://localhost:27018/ai_chat_memory
+
+langchain4j:
+  # OpenAI 兼容接口（deepseek 等），由 langchain4j-open-ai-spring-boot-starter 读取
+  open-ai:
+    chat-model:
+      base-url: https://api.deepseek.com
+      api-key: ${secrets.deepseek-api-key}
+      model-name: deepseek-v4-flash
+      temperature: 0.9
+      log-requests: true
+      log-responses: true
+  community:
+    dashscope:
+      embedding-model:
+        api-key: ${secrets.dashscope-api-key}
+        model-name: text-embedding-v3
+      streaming-chat-model:
+        api-key: ${secrets.dashscope-api-key}
+        model-name: qwen-plus
+
+# 阿里云百炼：业务空间专属域名只提供 OpenAI 兼容接口。
+# QwenChatModel（community starter / DashScope 原生 SDK）请求的
+# /api/v1/services/aigc/text2text/generation 已返回 400，因此改用 OpenAiChatModel。
+qwen:
+  #base-url: https://llm-ln8twdgnh2cfidt1.cn-beijing.maas.aliyuncs.com/api/v1/services/aigc/text2image/image-synthesis
+  base-url: https://llm-ln8twdgnh2cfidt1.cn-beijing.maas.aliyuncs.com/compatible-mode/v1
+  api-key: ${secrets.dashscope-api-key}
+  model-name: qwen3.8-flash
+
+
+logging:
+  level:
+    root: info
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
