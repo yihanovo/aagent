@@ -36,15 +36,13 @@ langchain4j:
         api-key: ${secrets.dashscope-api-key}
         model-name: qwen-plus
 
-# 阿里云百炼：业务空间专属域名只提供 OpenAI 兼容接口。
-# QwenChatModel（community starter / DashScope 原生 SDK）请求的
-# /api/v1/services/aigc/text2text/generation 已返回 400，因此改用 OpenAiChatModel。
+# 阿里云百炼业务空间专属域名只提供 OpenAI 兼容接口。
+# 供 LLMTest / RAGTest 通过 @Value 引用（自定义 OpenAI 兼容端点）；
+# 真实密钥统一由 application-secret.yml 的 secrets.dashscope-api-key 提供，此处不写明文。
 qwen:
-  #base-url: https://llm-ln8twdgnh2cfidt1.cn-beijing.maas.aliyuncs.com/api/v1/services/aigc/text2image/image-synthesis
   base-url: https://llm-ln8twdgnh2cfidt1.cn-beijing.maas.aliyuncs.com/compatible-mode/v1
   api-key: ${secrets.dashscope-api-key}
   model-name: qwen3.8-flash
-
 
 logging:
   level:

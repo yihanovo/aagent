@@ -155,4 +155,23 @@
 
     </dependencyManagement>
 
+    <build>
+        <plugins>
+            <!-- 本项目只 import BOM、不继承 spring-boot-starter-parent，
+                 因此插件必须显式声明版本并绑定 repackage，才能产出可执行 fat jar -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${spring-boot.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>

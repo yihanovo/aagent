@@ -16,18 +16,23 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 public class RAGTest {
+
+    // 模板与知识库都改用相对项目根目录的路径，不再绑定本机用户目录
+    private static final String PROMPT_TEMPLATE = "src/main/resources/my-prompt-template.txt";
+    private static final String KNOWLEDGE_PDF = "src/main/resources/knowledge/医院信息.pdf";
+
     @Test
     public void testReadDocument() {
 //使用FileSystemDocumentLoader读取指定目录下的知识库文档
 //并使用默认的文档解析器TextDocumentParser对文档进行解析
-        Document document = FileSystemDocumentLoader.loadDocument("C:\\Users\\fan21\\idea项目\\java-ai-langchain4j\\src\\main\\resources\\my-prompt-template.txt");
+        Document document = FileSystemDocumentLoader.loadDocument(PROMPT_TEMPLATE);
                 System.out.println(document.text());
     }
 
     @Test
     public void testParsePDF() {
         Document document = FileSystemDocumentLoader.loadDocument(
-                "C:\\Users\\fan21\\PycharmProjects\\langchain1.2\\asset\\load\\04-load.pdf",
+                KNOWLEDGE_PDF,
                 new ApachePdfBoxDocumentParser()
         );
         System.out.println(document);
@@ -37,7 +42,7 @@ public class RAGTest {
     public void testReadDocumentAndStore() {
 //使用FileSystemDocumentLoader读取指定目录下的知识库文档
 //并使用默认的文档解析器对文档进行解析(TextDocumentParser)
-        Document document = FileSystemDocumentLoader.loadDocument("C:\\Users\\fan21\\idea项目\\java-ai-langchain4j\\src\\main\\resources\\my-prompt-template.txt");
+        Document document = FileSystemDocumentLoader.loadDocument(PROMPT_TEMPLATE);
 //为了简单起见，我们暂时使用基于内存的向量存储
         InMemoryEmbeddingStore<TextSegment> embeddingStore = new InMemoryEmbeddingStore<>();
 //ingest
@@ -54,7 +59,7 @@ public class RAGTest {
     public void testDocumentSplitter() {
 //使用FileSystemDocumentLoader读取指定目录下的知识库文档
 //并使用默认的文档解析器对文档进行解析(TextDocumentParser)
-        Document document = FileSystemDocumentLoader.loadDocument("C:\\Users\\fan21\\idea项目\\java-ai-langchain4j\\src\\main\\resources\\my-prompt-template.txt");
+        Document document = FileSystemDocumentLoader.loadDocument(PROMPT_TEMPLATE);
 //为了简单起见，我们暂时使用基于内存的向量存储
         InMemoryEmbeddingStore<TextSegment> embeddingStore = new InMemoryEmbeddingStore<>();
 //自定义文档分割器
