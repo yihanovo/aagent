@@ -40,7 +40,7 @@ build/
 
 ### 本地密钥配置（禁止提交到远程仓库）###
 src/main/resources/application-secret.yml
-config/
+/config/
 
 ### IDE 与工具本地配置 ###
 .idea/
