@@ -7,7 +7,8 @@
 - **流式对话**：`@AiService` 声明式定义 Agent 接口，基于 Reactor `Flux` 流式返回，对接阿里云百炼 qwen-plus
 - **多轮对话记忆**：自定义实现 LangChain4j `ChatMemoryStore` SPI，会话记忆持久化到 MongoDB，服务重启不丢失；10 条滑动窗口控制上下文长度
 - **RAG 知识库问答**：医院/科室/神经内科等 md、pdf 文档经 text-embedding-v3 向量化后存入 Pinecone，检索时按 `maxResults` + `minScore` 阈值过滤
-- **Function Calling**：`@Tool` 声明预约挂号/取消预约/查询号源三个工具，大模型自主决定调用时机，预约数据经 MyBatis-Plus 写入 MySQL
+- **Function Calling**：`@Tool` 声明预约挂号/取消预约/查询号源三个工具，大模型自主决定调用时机，预约数据经 MyBatis-Plus 写入 MySQL；号源查询基于 `doctor_schedule` 排班表动态计算"容量 - 已约数量"，不是写死的假数据
+- **系统提示词变量**：`{{current_date}}` 由 `@V` 参数注入当天日期，"预约日期不得早于今天"等约束真正生效
 - **密钥安全**：真实密钥集中存放于本地 `application-secret.yml`，不进 Git、不进 fat jar；仓库只提交模板 `application-secret.example.yml`
 - **接口文档**：Knife4j（OpenAPI3），启动后访问 `http://localhost:8080/doc.html`
 
@@ -82,7 +83,13 @@ java -jar target/java-ai-langchain4j-1.0-SNAPSHOT.jar
 
 ### 5. 初始化知识库（首次使用）
 
-当前版本通过测试类 `EmbeddingTest` 将 `src/main/resources/knowledge/` 下的文档向量化写入 Pinecone（生产化 ingest 命令见路线图）。
+激活 ingest 独立运行模式，将 `src/main/resources/knowledge/` 下的文档切分（约 300 字/片段，重叠 30 字）、向量化写入 Pinecone，完成后自动退出：
+
+```bash
+java -jar target/java-ai-langchain4j-1.0-SNAPSHOT.jar --spring.profiles.active=ingest
+```
+
+正常启动（不带该 profile）不会重复灌库，避免每次启动白白消耗 embedding 调用。
 
 ### 6. 开始对话
 
@@ -105,8 +112,9 @@ src/main/java/com/shiyi/java/ai/langchain4j
 │   ├── XiaozhiAgentConfig.java  # 会话记忆、RAG 检索器装配
 │   └── EmbeddingStoreConfig.java# Pinecone 向量库装配
 ├── store/MongoChatMemoryStore.java # 自定义 ChatMemoryStore（MongoDB 持久化）
+├── ingest/KnowledgeIngestRunner.java # 知识库向量化入库（ingest profile 独立运行）
 ├── tools/AppointmentTools.java  # Function Calling 工具（预约/取消/查号源）
-├── service/ mapper/ entity/     # 预约业务持久层（MyBatis-Plus）
+├── service/ mapper/ entity/     # 预约与排班持久层（MyBatis-Plus）
 └── bean/                        # ChatForm、ChatMessages
 src/main/resources
 ├── knowledge/                   # RAG 知识库（md / pdf）
@@ -117,9 +125,10 @@ src/main/resources
 
 ## 路线图
 
-- [ ] 知识库向量化改为生产化 ingest（CommandLineRunner / 独立 profile）
+- [x] 知识库向量化独立 ingest 模式（`--spring.profiles.active=ingest`）+ 显式文档切分
+- [x] 号源查询接入排班表，动态计算剩余号量
+- [x] 系统提示词注入当前日期（`@V("current_date")`）
 - [ ] 对话接口声明 `text/event-stream`，前端 EventSource 无缝对接
-- [ ] 号源查询接入真实排班表
 - [ ] 接口鉴权（memoryId 与用户绑定）
 - [ ] Testcontainers 测试 + GitHub Actions CI
 
