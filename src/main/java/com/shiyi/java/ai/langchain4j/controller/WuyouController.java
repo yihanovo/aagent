@@ -1,6 +1,6 @@
 package com.shiyi.java.ai.langchain4j.controller;
 
-import com.shiyi.java.ai.langchain4j.assistant.XiaozhiAgent;
+import com.shiyi.java.ai.langchain4j.assistant.WuyouAgent;
 import com.shiyi.java.ai.langchain4j.bean.ChatForm;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -13,17 +13,17 @@ import reactor.core.publisher.Flux;
 
 import java.time.LocalDate;
 
-@Tag(name = "硅谷小智")
+@Tag(name = "无忧")
 @RestController
-@RequestMapping("/xiaozhi")
-public class XiaozhiController {
+@RequestMapping("/wuyou")
+public class WuyouController {
     @Autowired
-    private XiaozhiAgent xiaozhiAgent;
+    private WuyouAgent wuyouAgent;
     @Operation(summary = "对话")
     @PostMapping("/chat")
     public Flux<String> chat(@RequestBody ChatForm chatForm) {
         // 注入当前日期，填充系统提示词中的 {{current_date}}
-        return xiaozhiAgent.chat(chatForm.getMemoryId(),
+        return wuyouAgent.chat(chatForm.getMemoryId(),
                 chatForm.getMessage(),
                 LocalDate.now().toString());
     }

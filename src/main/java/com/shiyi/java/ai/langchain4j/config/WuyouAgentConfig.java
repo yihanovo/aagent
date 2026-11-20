@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * XiaozhiAgent 专用的聊天记忆与检索配置。
+ * WuyouAgent 专用的聊天记忆与检索配置。
  * Bean 名字必须和 @AiService 中 EXPLICIT 模式指定的名字一致，
  * 因为 EXPLICIT 模式下 langchain4j 是按 Bean 名字注入的，不会按类型自动匹配。
  *
@@ -20,7 +20,7 @@ import org.springframework.context.annotation.Configuration;
  * 见 ingest/KnowledgeIngestRunner：java -jar app.jar --spring.profiles.active=ingest
  */
 @Configuration
-public class XiaozhiAgentConfig {
+public class WuyouAgentConfig {
 
     @Autowired
     private MongoChatMemoryStore mongoChatMemoryStore;
@@ -31,9 +31,9 @@ public class XiaozhiAgentConfig {
     @Autowired
     private EmbeddingModel embeddingModel;
 
-    /** 提供 XiaoZhiAgent 的聊天记忆：每个会话 10 条滑动窗口，底层持久化到 MongoDB */
+    /** 提供 WuyouAgent 的聊天记忆：每个会话 10 条滑动窗口，底层持久化到 MongoDB */
     @Bean
-    ChatMemoryProvider chatMemoryProviderXiaozhi() {
+    ChatMemoryProvider chatMemoryProviderWuyou() {
         return memoryId -> MessageWindowChatMemory.builder()
                 .id(memoryId)
                 .maxMessages(10)
@@ -41,9 +41,9 @@ public class XiaozhiAgentConfig {
                 .build();
     }
 
-    /** Pinecone 向量库版本的检索器，XiaozhiAgent 实际注入的是这个 Bean */
+    /** Pinecone 向量库版本的检索器，WuyouAgent 实际注入的是这个 Bean */
     @Bean
-    ContentRetriever contentRetrieverXiaozhiPincone() {
+    ContentRetriever contentRetrieverWuyouPincone() {
         return EmbeddingStoreContentRetriever
                 .builder()
                 .embeddingModel(embeddingModel)

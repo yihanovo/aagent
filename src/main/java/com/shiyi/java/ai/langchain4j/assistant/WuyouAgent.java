@@ -12,12 +12,12 @@ import static dev.langchain4j.service.spring.AiServiceWiringMode.EXPLICIT;
 @AiService(
         wiringMode = EXPLICIT,
         streamingChatModel = "qwenStreamingChatModel",
-        chatMemoryProvider = "chatMemoryProviderXiaozhi",
+        chatMemoryProvider = "chatMemoryProviderWuyou",
         tools = "appointmentTools",
-        contentRetriever = "contentRetrieverXiaozhiPincone" //配置向量存储
+        contentRetriever = "contentRetrieverWuyouPincone" //配置向量存储
 )
-public interface XiaozhiAgent {
-    @SystemMessage(fromResource = "zhaozhi-prompt-template.txt")
+public interface WuyouAgent {
+    @SystemMessage(fromResource = "wuyou-prompt-template.txt")
     Flux<String> chat(@MemoryId Long memoryId,
                       @UserMessage String userMessage,
                       // 对应系统提示词模板中的 {{current_date}}，

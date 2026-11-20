@@ -1,4 +1,4 @@
-# 小智医疗问诊智能体（xiaozhi-medical-agent）
+# 无忧医疗问诊智能体（wuyou-medical-agent）
 
 基于 **Spring Boot 3 + LangChain4j** 构建的医疗问诊 AI Agent：支持**流式多轮对话**、**RAG 医院知识库问答**、**Function Calling 预约挂号**，对话记忆持久化到 MongoDB，业务数据落库 MySQL。
 
@@ -16,8 +16,8 @@
 
 ```mermaid
 flowchart LR
-    U[用户 / 前端] -->|POST /xiaozhi/chat| C[XiaozhiController<br/>Flux 流式返回]
-    C --> A[XiaozhiAgent<br/>@AiService 声明式编排]
+    U[用户 / 前端] -->|POST /wuyou/chat| C[WuyouController<br/>Flux 流式返回]
+    C --> A[WuyouAgent<br/>@AiService 声明式编排]
     A -->|流式生成| M[百炼 qwen-plus<br/>OpenAI 兼容协议]
     A -->|读写会话记忆| MEM[MongoChatMemoryStore<br/>自定义 ChatMemoryStore]
     MEM --> MG[(MongoDB<br/>ai_chat_memory)]
@@ -49,7 +49,7 @@ flowchart LR
 - MongoDB（Docker 一键启动，映射到 27018 与 `application.yml` 一致）：
 
 ```bash
-docker run -d --name xiaozhi-mongo -p 27018:27017 -v xiaozhi-mongo-data:/data/db mongo:5
+docker run -d --name wuyou-mongo -p 27018:27017 -v wuyou-mongo-data:/data/db mongo:5
 ```
 
 - 大模型 API Key：[阿里云百炼 DashScope](https://bailian.console.aliyun.com/)（对话 + 向量化共用）、[DeepSeek](https://platform.deepseek.com/)、[Pinecone](https://www.pinecone.io/)
@@ -94,7 +94,7 @@ java -jar target/java-ai-langchain4j-1.0-SNAPSHOT.jar --spring.profiles.active=i
 ### 6. 开始对话
 
 ```bash
-curl -X POST http://localhost:8080/xiaozhi/chat \
+curl -X POST http://localhost:8080/wuyou/chat \
   -H "Content-Type: application/json" \
   -d '{"memoryId": 1, "message": "帮我挂一个明天上午的神经内科号"}'
 ```
@@ -105,11 +105,11 @@ curl -X POST http://localhost:8080/xiaozhi/chat \
 
 ```
 src/main/java/com/shiyi/java/ai/langchain4j
-├── XiaozhiApp.java              # 启动类
-├── assistant/XiaozhiAgent.java  # Agent 接口（@AiService 声明式编排）
-├── controller/XiaozhiController # 对话接口（Flux 流式）
+├── WuyouApp.java                # 启动类
+├── assistant/WuyouAgent.java    # Agent 接口（@AiService 声明式编排）
+├── controller/WuyouController   # 对话接口（Flux 流式）
 ├── config/
-│   ├── XiaozhiAgentConfig.java  # 会话记忆、RAG 检索器装配
+│   ├── WuyouAgentConfig.java    # 会话记忆、RAG 检索器装配
 │   └── EmbeddingStoreConfig.java# Pinecone 向量库装配
 ├── store/MongoChatMemoryStore.java # 自定义 ChatMemoryStore（MongoDB 持久化）
 ├── ingest/KnowledgeIngestRunner.java # 知识库向量化入库（ingest profile 独立运行）
@@ -118,7 +118,7 @@ src/main/java/com/shiyi/java/ai/langchain4j
 └── bean/                        # ChatForm、ChatMessages
 src/main/resources
 ├── knowledge/                   # RAG 知识库（md / pdf）
-├── zhaozhi-prompt-template.txt  # 系统提示词模板
+├── wuyou-prompt-template.txt    # 系统提示词模板
 ├── application.yml              # 主配置（不含密钥）
 └── application-secret.example.yml # 密钥模板
 ```
