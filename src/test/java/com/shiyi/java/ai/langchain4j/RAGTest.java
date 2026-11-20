@@ -18,7 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 public class RAGTest {
 
     // 模板与知识库都改用相对项目根目录的路径，不再绑定本机用户目录
-    private static final String PROMPT_TEMPLATE = "src/main/resources/my-prompt-template.txt";
+    private static final String PROMPT_TEMPLATE ="src/main/resources/knowledge/医院信息.pdf";
     private static final String KNOWLEDGE_PDF = "src/main/resources/knowledge/医院信息.pdf";
 
     @Test
