@@ -2,9 +2,12 @@ server:
   port: 8080
 
 spring:
-  # 引入本地密钥配置（该文件不提交到远程仓库）
+  # 密钥配置双通道（均为 optional，缺文件不阻断启动）：
+  #  - classpath：开发期（IDE / 源码运行），读取 src/main/resources/application-secret.yml
+  #  - file:./config/：生产期（fat jar），密钥文件已被打包排除，从 jar 同级 config/ 目录读取
+  # 两处都存在时，file:./config/ 优先生效
   config:
-    import: classpath:application-secret.yml
+    import: optional:classpath:application-secret.yml;optional:file:./config/application-secret.yml
   datasource:
     url: jdbc:mysql://localhost:3306/guiguxiaozhi?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&useSSL=false
     username: root
@@ -25,8 +28,9 @@ langchain4j:
       api-key: ${secrets.deepseek-api-key}
       model-name: deepseek-v4-flash
       temperature: 0.9
-      log-requests: true
-      log-responses: true
+      # 关闭请求/响应日志：开启会把用户姓名、身份证等 PII 明文写进日志
+      log-requests: false
+      log-responses: false
   community:
     dashscope:
       embedding-model:

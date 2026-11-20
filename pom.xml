@@ -156,6 +156,16 @@
     </dependencyManagement>
 
     <build>
+        <resources>
+            <!-- 排除本地密钥文件，防止真实密钥被打进 fat jar 随 jar 分发；
+                 application-secret.example.yml 是不含真实值的模板，保留打包 -->
+            <resource>
+                <directory>src/main/resources</directory>
+                <excludes>
+                    <exclude>application-secret.yml</exclude>
+                </excludes>
+            </resource>
+        </resources>
         <plugins>
             <!-- 本项目只 import BOM、不继承 spring-boot-starter-parent，
                  因此插件必须显式声明版本并绑定 repackage，才能产出可执行 fat jar -->
